@@ -288,3 +288,8 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.toptal.com/developers/gitignore/api/visualstudiocode,venv,python,windows,macos,data,database
+
+
+
+
+test.py
