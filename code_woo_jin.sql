@@ -18,6 +18,9 @@ JOIN inventory i ON r.inventory_id = i.inventory_id
 JOIN film f ON i.film_id = f.film_id
 GROUP BY f.title, r.customer_id
 ORDER BY film_title, total_rentals DESC;
+
+
+
 SELECT
     f.title AS film_title,
     COUNT(*) AS rental_count
