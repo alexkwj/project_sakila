@@ -2,7 +2,7 @@
 
 
 USE sakila;
-
+-- 6번에 관하여
 SELECT HOUR(r.rental_date) AS rental_hour,f.title AS film_title,COUNT(*) AS rental_count
 FROM rental r
 JOIN inventory i ON r.inventory_id = i.inventory_id
@@ -11,7 +11,7 @@ GROUP BY rental_hour, film_title
 HAVING rental_count > 1
 ORDER BY rental_hour, rental_count DESC;
 
-
+-- 7번에 관하여
 SELECT f.title AS film_title, r.customer_id, COUNT(*) AS total_rentals
 FROM rental r
 JOIN inventory i ON r.inventory_id = i.inventory_id
@@ -20,7 +20,7 @@ GROUP BY f.title, r.customer_id
 ORDER BY film_title, total_rentals DESC;
 
 
-
+-- 8번에 관하여
 SELECT
     f.title AS film_title,
     COUNT(*) AS rental_count
@@ -38,7 +38,9 @@ ORDER BY rental_count DESC;
 
 
 SELECT *
-FROM customer
+FROM customer;
 
 
+SELECT *
+FROM rental;
 
