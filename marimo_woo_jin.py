@@ -135,10 +135,98 @@ def _(db):
 
 
 @app.cell
-def _(engine, mo):
+def _(customer, engine, mo, rental):
     _df = mo.sql(
         f"""
-        SELECT * FROM
+        SELECT count(*)
+        FROM customer c
+        left join rental r
+        ON c.customer_id = r.customer_id;
+        """,
+        engine=engine
+    )
+    return
+
+
+@app.cell
+def _(customer, engine, mo, rental):
+    _df = mo.sql(
+        f"""
+        SELECT c.customer_id, count(*)
+        FROM rental r
+        join customer c
+        on c.customer_id = r.customer_id
+        group by c.customer_id;
+        -- 영화 빌린 횟수 확인 148 번과 526 번 확인하면 좋겠다를 확인
+
+
+
+
+        """,
+        engine=engine
+    )
+    return
+
+
+@app.cell
+def _(customer, engine, film, inventory, mo, rental):
+    _df = mo.sql(
+        f"""
+        SELECT r.rental_date,r.return_date , TIMESTAMPDIFF(DAY,r.rental_date,r.return_date) AS diff,f.title
+        FROM rental r
+        join customer c
+        on c.customer_id = r.customer_id
+        join inventory i
+        on i.inventory_id = r.inventory_id
+        join film f
+        on f.film_id = i.film_id
+        where c.customer_id = 158;
+        """,
+        engine=engine
+    )
+    return
+
+
+@app.cell
+def _(customer, engine, film, inventory, mo, rental):
+    _df = mo.sql(
+        f"""
+        SELECT f.title,count(*)
+        FROM rental r
+        join customer c
+        on c.customer_id = r.customer_id
+        join inventory i
+        on i.inventory_id = r.inventory_id
+        join film f
+        on f.film_id = i.film_id
+        where c.customer_id = 158
+        group by f.title;
+        """,
+        engine=engine
+    )
+    return
+
+
+@app.cell
+def _(category, customer, engine, film, film_category, inventory, mo, rental):
+    _df = mo.sql(
+        f"""
+        SELECT cat.name,count(*)
+        FROM rental r
+        join customer c
+        on c.customer_id = r.customer_id
+        join inventory i
+        on i.inventory_id = r.inventory_id
+        join film f
+        on f.film_id = i.film_id
+        join film_category fc
+        on fc.film_id = f.film_id
+        join category cat
+        on cat.category_id =fc.category_id
+        where c.customer_id = 158
+        group by cat.name;
+
+        --158번의 어떤카테고리를 봤냐를 볼 수 있다!
         """,
         engine=engine
     )

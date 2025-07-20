@@ -40,9 +40,11 @@ WHERE r.customer_id IN (
 GROUP BY f.title, c.name
 ORDER BY rental_count DESC;
 
--- 새로운 관점
+-- 새로운 관점 준수형님이 했어야했던 쿼리문
 SELECT i.film_id, COUNT(*) AS total_inventory, f.title AS film_title
 FROM inventory i
 JOIN rental r ON i.inventory_id = r.inventory_id
 JOIN film f ON i.film_id = f.film_id
 GROUP BY i.film_id;
+
+-- 취향 공유기능 확인해 보기
