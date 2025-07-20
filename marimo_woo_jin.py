@@ -54,7 +54,6 @@ def _(engine, film, inventory, mo, rental):
         GROUP BY rental_hour, film_title
         HAVING rental_count > 1
         ORDER BY rental_hour, rental_count DESC;
-
         """,
         engine=engine
     )
@@ -104,7 +103,7 @@ def _(engine, film, inventory, mo, rental):
 
 @app.cell
 def _(category, engine, film, film_category, inventory, mo, rental):
-    _df = mo.sql(
+    db = mo.sql(
         f"""
         SELECT
             f.title AS film_title,
@@ -123,6 +122,23 @@ def _(category, engine, film, film_category, inventory, mo, rental):
         )
         GROUP BY f.title, c.name
         ORDER BY rental_count DESC;
+        """,
+        engine=engine
+    )
+    return (db,)
+
+
+@app.cell
+def _(db):
+    db["category_name"].value_counts()
+    return
+
+
+@app.cell
+def _(engine, mo):
+    _df = mo.sql(
+        f"""
+        SELECT * FROM
         """,
         engine=engine
     )
