@@ -158,10 +158,6 @@ def _(customer, engine, mo, rental):
         on c.customer_id = r.customer_id
         group by c.customer_id;
         -- 영화 빌린 횟수 확인 148 번과 526 번 확인하면 좋겠다를 확인
-
-
-
-
         """,
         engine=engine
     )
@@ -226,7 +222,44 @@ def _(category, customer, engine, film, film_category, inventory, mo, rental):
         where c.customer_id = 158
         group by cat.name;
 
-        --158번의 어떤카테고리를 봤냐를 볼 수 있다!
+        -- 158번의 어떤카테고리를 봤냐를 볼 수 있다!
+        """,
+        engine=engine
+    )
+    return
+
+
+@app.cell
+def _(
+    actor,
+    category,
+    customer,
+    engine,
+    film,
+    film_actor,
+    film_category,
+    inventory,
+    mo,
+    rental,
+):
+    _df = mo.sql(
+        f"""
+        SELECT 
+            act.first_name,
+            act.last_name,
+            COUNT(*)
+        FROM 
+            rental r
+        JOIN customer c ON c.customer_id = r.customer_id
+        JOIN inventory i ON i.inventory_id = r.inventory_id
+        JOIN film f ON f.film_id = i.film_id
+        JOIN film_category fc ON fc.film_id = f.film_id
+        JOIN category cat ON cat.category_id = fc.category_id
+        JOIN film_actor fa ON f.film_id = fa.film_id
+        JOIN actor act ON fa.actor_id = act.actor_id
+        WHERE c.customer_id = 158
+        GROUP BY act.first_name, act.last_name;
+
         """,
         engine=engine
     )
