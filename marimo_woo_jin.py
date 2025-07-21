@@ -177,7 +177,7 @@ def _(customer, engine, film, inventory, mo, rental):
         on i.inventory_id = r.inventory_id
         join film f
         on f.film_id = i.film_id
-        where c.customer_id = 158
+        where c.customer_id = 148
         order by diff desc;
         """,
         engine=engine
@@ -197,7 +197,7 @@ def _(customer, engine, film, inventory, mo, rental):
         on i.inventory_id = r.inventory_id
         join film f
         on f.film_id = i.film_id
-        where c.customer_id = 158
+        where c.customer_id = 148
         group by f.title
         order by count(*) desc;
         """,
@@ -222,7 +222,7 @@ def _(category, customer, engine, film, film_category, inventory, mo, rental):
         on fc.film_id = f.film_id
         join category cat
         on cat.category_id =fc.category_id
-        where c.customer_id = 158
+        where c.customer_id = 148
         group by cat.name
         order by count(*) DESC;
 
@@ -261,7 +261,7 @@ def _(
         JOIN category cat ON cat.category_id = fc.category_id
         JOIN film_actor fa ON f.film_id = fa.film_id
         JOIN actor act ON fa.actor_id = act.actor_id
-        WHERE c.customer_id = 158
+        WHERE c.customer_id = 148
         GROUP BY act.first_name, act.last_name
         order by count(*) DESC;
         """,
