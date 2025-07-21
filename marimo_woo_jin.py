@@ -156,7 +156,8 @@ def _(customer, engine, mo, rental):
         FROM rental r
         join customer c
         on c.customer_id = r.customer_id
-        group by c.customer_id;
+        group by c.customer_id
+        order by count(*) DESC;
         -- 영화 빌린 횟수 확인 148 번과 526 번 확인하면 좋겠다를 확인
         """,
         engine=engine
@@ -176,7 +177,8 @@ def _(customer, engine, film, inventory, mo, rental):
         on i.inventory_id = r.inventory_id
         join film f
         on f.film_id = i.film_id
-        where c.customer_id = 158;
+        where c.customer_id = 158
+        order by diff desc;
         """,
         engine=engine
     )
@@ -196,7 +198,8 @@ def _(customer, engine, film, inventory, mo, rental):
         join film f
         on f.film_id = i.film_id
         where c.customer_id = 158
-        group by f.title;
+        group by f.title
+        order by count(*) desc;
         """,
         engine=engine
     )
@@ -220,7 +223,8 @@ def _(category, customer, engine, film, film_category, inventory, mo, rental):
         join category cat
         on cat.category_id =fc.category_id
         where c.customer_id = 158
-        group by cat.name;
+        group by cat.name
+        order by count(*) DESC;
 
         -- 158번의 어떤카테고리를 봤냐를 볼 수 있다!
         """,
@@ -258,8 +262,8 @@ def _(
         JOIN film_actor fa ON f.film_id = fa.film_id
         JOIN actor act ON fa.actor_id = act.actor_id
         WHERE c.customer_id = 158
-        GROUP BY act.first_name, act.last_name;
-
+        GROUP BY act.first_name, act.last_name
+        order by count(*) DESC;
         """,
         engine=engine
     )
