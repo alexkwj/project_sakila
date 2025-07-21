@@ -45,6 +45,7 @@ SELECT i.film_id, COUNT(*) AS total_inventory, f.title AS film_title
 FROM inventory i
 JOIN rental r ON i.inventory_id = r.inventory_id
 JOIN film f ON i.film_id = f.film_id
-GROUP BY i.film_id;
+GROUP BY i.film_id
+ORDER BY total_inventory DESC;
 
 -- 취향 공유기능 확인해 보기
