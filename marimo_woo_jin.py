@@ -152,7 +152,7 @@ def _(customer, engine, mo, rental):
 def _(customer, engine, mo, rental):
     _df = mo.sql(
         f"""
-        SELECT c.customer_id, count(*)
+        SELECT c.customer_id, count(*), c.first_name,c.last_name
         FROM rental r
         join customer c
         on c.customer_id = r.customer_id
@@ -264,6 +264,100 @@ def _(
         WHERE c.customer_id = 148
         GROUP BY act.first_name, act.last_name
         order by count(*) DESC;
+        """,
+        engine=engine
+    )
+    return
+
+
+@app.cell
+def _(category, engine, film, film_category, inventory, mo, rental):
+    _df = mo.sql(
+        f"""
+        SELECT
+            c.name AS category_name,
+            COUNT(*) AS rental_count
+        FROM rental r
+        JOIN inventory i ON r.inventory_id = i.inventory_id
+        JOIN film f ON i.film_id = f.film_id
+        JOIN film_category fc ON f.film_id = fc.film_id
+        JOIN category c ON fc.category_id = c.category_id
+        GROUP BY c.name
+        ORDER BY rental_count DESC;
+        """,
+        engine=engine
+    )
+    return
+
+
+@app.cell
+def _(engine, film, inventory, mo, rental):
+    _df = mo.sql(
+        f"""
+        SELECT f.title, COUNT(*) AS times_rented
+        FROM rental r
+        JOIN inventory i ON r.inventory_id = i.inventory_id
+        JOIN film f ON i.film_id = f.film_id
+        WHERE r.customer_id IN (
+            SELECT customer_id
+            FROM rental
+            GROUP BY customer_id
+            HAVING COUNT(*) > 20
+        )
+        GROUP BY f.title
+        ORDER BY times_rented DESC
+        LIMIT 10;
+
+        """,
+        engine=engine
+    )
+    return
+
+
+@app.cell
+def _(category, engine, film_category, inventory, mo, rental):
+    _df = mo.sql(
+        f"""
+        SELECT
+            HOUR(r.rental_date) AS rental_hour,
+            c.name AS category,
+            COUNT(*) AS rental_count
+        FROM rental r
+        JOIN inventory i ON r.inventory_id = i.inventory_id
+        JOIN film_category fc ON i.film_id = fc.film_id
+        JOIN category c ON fc.category_id = c.category_id
+        GROUP BY rental_hour, category
+        ORDER BY rental_hour, rental_count DESC;
+
+        """,
+        engine=engine
+    )
+    return
+
+
+@app.cell
+def _(category, engine, film_category, inventory, mo, rental):
+    _df = mo.sql(
+        f"""
+        SELECT rental_hour, category, rental_count
+        FROM (
+            SELECT
+                HOUR(r.rental_date) AS rental_hour,
+                c.name AS category,
+                COUNT(*) AS rental_count,
+                ROW_NUMBER() OVER (
+                    PARTITION BY HOUR(r.rental_date)
+                    ORDER BY COUNT(*) DESC
+                ) AS rn
+            FROM rental r
+            JOIN inventory i ON r.inventory_id = i.inventory_id
+            JOIN film_category fc ON i.film_id = fc.film_id
+            JOIN category c ON fc.category_id = c.category_id
+            GROUP BY rental_hour, category
+        ) ranked
+        WHERE rn = 1
+        ORDER BY rental_hour;
+
         """,
         engine=engine
     )
